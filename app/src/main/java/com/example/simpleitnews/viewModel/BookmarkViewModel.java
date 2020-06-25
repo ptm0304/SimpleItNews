@@ -5,11 +5,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.simpleitnews.dagger.scope.PerFragment;
 import com.example.simpleitnews.model.dto.NewsDto;
 import com.example.simpleitnews.model.repository.NewsRepository;
 import com.example.simpleitnews.util.ArticleNavigator;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class BookmarkViewModel extends ViewModel {
     private LiveData<List<NewsDto>> mBookmarkList;
@@ -34,10 +37,12 @@ public class BookmarkViewModel extends ViewModel {
         mRepository.updateNews(news);
     }
 
+    @PerFragment
     public static class BookmarkViewModelFactory implements ViewModelProvider.Factory {
         private NewsRepository mRepo;
         private ArticleNavigator mNav;
 
+        @Inject
         public BookmarkViewModelFactory(NewsRepository repo, ArticleNavigator nav) {
             mRepo = repo;
             mNav = nav;

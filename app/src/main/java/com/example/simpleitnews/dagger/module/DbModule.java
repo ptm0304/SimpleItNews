@@ -1,6 +1,8 @@
-package com.example.simpleitnews.dagger;
+package com.example.simpleitnews.dagger.module;
 
 import android.content.Context;
+
+import androidx.room.Room;
 
 import com.example.simpleitnews.util.AppDatabase;
 
@@ -20,6 +22,7 @@ public class DbModule {
     @Singleton
     @Provides //scope is not necessary for parameters stored within the module
     public AppDatabase provideDb() {
-        return AppDatabase.getInstance(context);
+        return Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class,
+                "it-news-db").build();
     }
 }

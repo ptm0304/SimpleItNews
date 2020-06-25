@@ -34,12 +34,7 @@ public class MainActivity extends AppCompatActivity implements ArticleNavigator 
         mBinding.mainViewPager.setAdapter(new MainPagerAdapter(this, 2));
 
         new TabLayoutMediator(mBinding.mainTabLayout, mBinding.mainViewPager,
-                new TabLayoutMediator.TabConfigurationStrategy() {
-                    @Override
-                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                        tab.setText(mTabTitles[position]);
-                    }
-                }).attach();
+                (tab, position) -> tab.setText(mTabTitles[position])).attach();
     }
 
     @Override

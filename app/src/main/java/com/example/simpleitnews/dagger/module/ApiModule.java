@@ -1,5 +1,6 @@
-package com.example.simpleitnews.util;
+package com.example.simpleitnews.dagger.module;
 
+import com.example.simpleitnews.util.NewsService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -12,7 +13,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
-public class ApiUtil {
+public class ApiModule {
 
     private final static String BASE_URL = "https://openapi.naver.com/v1/";
 

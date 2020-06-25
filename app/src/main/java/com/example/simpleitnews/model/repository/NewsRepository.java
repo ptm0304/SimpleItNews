@@ -4,20 +4,45 @@ import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
+import com.example.simpleitnews.dagger.scope.PerFragment;
 import com.example.simpleitnews.model.dto.NewsDto;
 import com.example.simpleitnews.util.AppDatabase;
+import com.example.simpleitnews.util.NewsService;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
+@PerFragment
 public class NewsRepository {
-    @Inject
     AppDatabase db;
+    NewsService mNewsService;
+    private Disposable mDisposable;
+
+    @Inject
+    public NewsRepository(AppDatabase db, NewsService newsService) {
+        this.db = db;
+        this.mNewsService = newsService;
+    }
 
     public void insertAllNews(List<NewsDto> newsList) {
         new NewsInsertAllAsyncTask(newsList).execute();
+    }
+
+    public void updateNewsList(String query) {
+        mDisposable = mNewsService.listNews(query)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(items -> insertAllNews(items.getNewsDtoList()));
+    }
+
+    public void disposeDisposable() {
+        mDisposable.dispose();
     }
 
     public void updateNews(NewsDto news) {
