@@ -15,17 +15,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+@PerFragment
 public class NewsViewModel extends ViewModel {
     private LiveData<List<NewsDto>> newsList;
     private NewsRepository mRepository;
-    private ArticleNavigator mNav;
     @Inject
     public NewsService newsService;
 
-    public NewsViewModel(NewsRepository repository, ArticleNavigator nav) {
+    @Inject
+    public NewsViewModel(NewsRepository repository) {
         mRepository = repository;
         newsList = mRepository.loadAllNews();
-        mNav = nav;
         mRepository.updateNewsList("테크 | 기술 | 아이티 | IT | ICT | iot | 사물인터넷 | 4차산업혁명 | AI | 인공지능 | 빅데이터 | 자율주행");
     }
 
@@ -41,26 +41,22 @@ public class NewsViewModel extends ViewModel {
         mRepository.updateNews(news);
     }
 
-    @PerFragment
-    public static class NewsViewModelFactory implements ViewModelProvider.Factory {
-        private NewsRepository mRepo;
-        private ArticleNavigator mNav;
-
-        @Inject
-        public NewsViewModelFactory(NewsRepository repo, ArticleNavigator nav) {
-            mRepo = repo;
-            mNav = nav;
-        }
-        @NonNull
-        @Override
-        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new NewsViewModel(mRepo, mNav);
-        }
-    }
-
-    public void navigateArticle(NewsDto news) {
-        mNav.navigateArticle(news);
-    }
+//    @PerFragment
+//    public static class NewsViewModelFactory implements ViewModelProvider.Factory {
+//        private NewsRepository mRepo;
+//        private ArticleNavigator mNav;
+//
+//        @Inject
+//        public NewsViewModelFactory(NewsRepository repo, ArticleNavigator nav) {
+//            mRepo = repo;
+//            mNav = nav;
+//        }
+//        @NonNull
+//        @Override
+//        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+//            return (T) new NewsViewModel(mRepo, mNav);
+//        }
+//    }
 
     @Override
     protected void onCleared() {

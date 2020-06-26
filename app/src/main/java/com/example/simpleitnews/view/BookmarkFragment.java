@@ -20,16 +20,20 @@ import com.example.simpleitnews.model.repository.NewsRepository;
 import com.example.simpleitnews.util.ArticleNavigator;
 import com.example.simpleitnews.viewModel.BookmarkViewModel;
 import com.example.simpleitnews.viewModel.NewsViewModel;
+import com.example.simpleitnews.viewModel.ViewModelFactory;
 
 import javax.inject.Inject;
 
 public class BookmarkFragment extends Fragment {
 
-    BookmarkViewModel mVm;
+    private BookmarkViewModel mVm;
     private BookmarkFragmentBinding mBinding;
 
     @Inject
     NewsRepository mRepository;
+
+    @Inject
+    ViewModelFactory mVmFactory;
 
 
     @Override
@@ -38,15 +42,13 @@ public class BookmarkFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.bookmark_fragment, container, false);
         mBinding.setLifecycleOwner(this);
 
-//        NewsFragmentComponent component = ((BaseApplication) getActivity().getApplication())
-//                .getAppComponent()
-//                .getNewsFragmentComponent();
-//        component.inject(this);
+        NewsFragmentComponent component = ((BaseApplication) getActivity().getApplication())
+                .getAppComponent()
+                .getNewsFragmentComponent();
+        component.inject(this);
 
-        mVm = new ViewModelProvider(this, new BookmarkViewModel.BookmarkViewModelFactory(
-                mRepository, (ArticleNavigator) getActivity())).get(BookmarkViewModel.class);
-
-        mBinding.bookmarkRv.setAdapter(new BookmarkRvAdapter(mVm));
+        mVm = new ViewModelProvider(this, mVmFactory).get(BookmarkViewModel.class);
+        mBinding.bookmarkRv.setAdapter(new BookmarkRvAdapter(mVm, (ArticleNavigator) getActivity()));
         mBinding.setVm(mVm);
 
         return mBinding.getRoot();

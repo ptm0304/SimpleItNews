@@ -14,15 +14,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+@PerFragment
 public class BookmarkViewModel extends ViewModel {
     private LiveData<List<NewsDto>> mBookmarkList;
     private NewsRepository mRepository;
-    private ArticleNavigator mNav;
 
-    public BookmarkViewModel(NewsRepository repository, ArticleNavigator nav) {
+    @Inject
+    public BookmarkViewModel(NewsRepository repository) {
         mRepository = repository;
         mBookmarkList = mRepository.loadAllBookmarks();
-        mNav = nav;
     }
 
     public LiveData<List<NewsDto>> getBookmarkList() {
@@ -35,26 +35,5 @@ public class BookmarkViewModel extends ViewModel {
 
     public void updateNews(NewsDto news) {
         mRepository.updateNews(news);
-    }
-
-    @PerFragment
-    public static class BookmarkViewModelFactory implements ViewModelProvider.Factory {
-        private NewsRepository mRepo;
-        private ArticleNavigator mNav;
-
-        @Inject
-        public BookmarkViewModelFactory(NewsRepository repo, ArticleNavigator nav) {
-            mRepo = repo;
-            mNav = nav;
-        }
-        @NonNull
-        @Override
-        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new BookmarkViewModel(mRepo, mNav);
-        }
-    }
-
-    public void navigateArticle(NewsDto news) {
-        mNav.navigateArticle(news);
     }
 }

@@ -20,7 +20,7 @@ public class DbModule {
     }
 
     @Singleton
-    @Provides //scope is not necessary for parameters stored within the module
+    @Provides
     public AppDatabase provideDb() {
         return Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class,
                 "it-news-db").build();

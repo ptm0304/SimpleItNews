@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.simpleitnews.R;
 import com.example.simpleitnews.databinding.RvNewsItemBinding;
 import com.example.simpleitnews.model.dto.NewsDto;
+import com.example.simpleitnews.util.ArticleNavigator;
 import com.example.simpleitnews.viewModel.NewsViewModel;
 
 import java.util.List;
@@ -20,9 +21,11 @@ import java.util.List;
 public class NewsRvAdapter extends RecyclerView.Adapter<NewsRvAdapter.NewsViewHolder>{
     private LiveData<List<NewsDto>> mNews;
     private NewsViewModel mVm;
+    private ArticleNavigator mArticleNavigator;
 
-    public NewsRvAdapter(NewsViewModel vm){
+    public NewsRvAdapter(NewsViewModel vm, ArticleNavigator articleNavigator){
         mVm = vm;
+        mArticleNavigator = articleNavigator;
     }
 
     @NonNull
@@ -69,7 +72,7 @@ public class NewsRvAdapter extends RecyclerView.Adapter<NewsRvAdapter.NewsViewHo
 
             // 뉴스 클릭시 기사보기 웹뷰로 이동
             view.setOnClickListener(v -> {
-                mVm.navigateArticle(mNews);
+                mArticleNavigator.navigateArticle(mNews);
             });
 
             // 북마크 클릭시 북마크 추가
