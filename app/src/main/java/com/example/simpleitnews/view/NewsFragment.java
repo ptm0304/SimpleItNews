@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ import com.example.simpleitnews.R;
 import com.example.simpleitnews.adapter.NewsRvAdapter;
 import com.example.simpleitnews.dagger.NewsFragmentComponent;
 import com.example.simpleitnews.databinding.NewsFragmentBinding;
-import com.example.simpleitnews.model.repository.NewsRepository;
 import com.example.simpleitnews.util.ArticleNavigator;
 import com.example.simpleitnews.viewModel.NewsViewModel;
 import com.example.simpleitnews.viewModel.ViewModelFactory;
@@ -31,7 +29,6 @@ public class NewsFragment extends Fragment {
     private NewsFragmentBinding mBinding;
     @Inject
     ViewModelFactory mVmFactory;
-    @Inject NewsRepository mRepository;
     NewsViewModel mVm;
 
 

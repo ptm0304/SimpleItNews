@@ -4,34 +4,21 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import javax.inject.Inject;
+import java.util.Map;
+
 import javax.inject.Provider;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
-    private final Provider<NewsViewModel> mNewsViewModelProvider;
-    private final Provider<BookmarkViewModel> mBookmarkViewModelProvider;
+    private final Map<Class<? extends ViewModel>, Provider<ViewModel>> mProviderMap;
 
-    @Inject
-    public ViewModelFactory(Provider<NewsViewModel> newsViewModelProvider, Provider<BookmarkViewModel> bookmarkViewModelProvider) {
-        mNewsViewModelProvider= newsViewModelProvider;
-        mBookmarkViewModelProvider = bookmarkViewModelProvider;
+    public ViewModelFactory(Map<Class<? extends ViewModel>, Provider<ViewModel>> providerMap) {
+        mProviderMap = providerMap;
     }
 
     @SuppressWarnings("unchecked")
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        ViewModel viewModel;
-        if (modelClass == NewsViewModel.class) {
-            viewModel = mNewsViewModelProvider.get();
-        }
-        else if (modelClass == BookmarkViewModel.class) {
-            viewModel = mBookmarkViewModelProvider.get();
-        }
-        else {
-            throw new RuntimeException("unsupported view model class: " + modelClass);
-        }
-
-        return (T) viewModel;
+        return (T) mProviderMap.get(modelClass).get();
     }
 }

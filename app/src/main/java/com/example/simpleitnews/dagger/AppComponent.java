@@ -11,8 +11,6 @@ import dagger.Component;
 @Singleton
 @Component(modules={DbModule.class, ApiModule.class, ArticleNavigatorModule.class})
 public interface AppComponent {
-//    NewsRepositoryComponent getNewsRepositoryComponent();
-//    NewsViewModelComponent getNewsViewModelComponent();
     NewsFragmentComponent getNewsFragmentComponent();
 
     @Component.Builder

@@ -16,10 +16,8 @@ import com.example.simpleitnews.R;
 import com.example.simpleitnews.adapter.BookmarkRvAdapter;
 import com.example.simpleitnews.dagger.NewsFragmentComponent;
 import com.example.simpleitnews.databinding.BookmarkFragmentBinding;
-import com.example.simpleitnews.model.repository.NewsRepository;
 import com.example.simpleitnews.util.ArticleNavigator;
 import com.example.simpleitnews.viewModel.BookmarkViewModel;
-import com.example.simpleitnews.viewModel.NewsViewModel;
 import com.example.simpleitnews.viewModel.ViewModelFactory;
 
 import javax.inject.Inject;
@@ -28,9 +26,6 @@ public class BookmarkFragment extends Fragment {
 
     private BookmarkViewModel mVm;
     private BookmarkFragmentBinding mBinding;
-
-    @Inject
-    NewsRepository mRepository;
 
     @Inject
     ViewModelFactory mVmFactory;
