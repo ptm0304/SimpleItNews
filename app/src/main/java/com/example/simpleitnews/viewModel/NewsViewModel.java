@@ -7,6 +7,7 @@ import com.example.simpleitnews.dagger.scope.PerFragment;
 import com.example.simpleitnews.model.dto.NewsDto;
 import com.example.simpleitnews.model.repository.NewsRepository;
 
+import java.util.HashSet;
 import java.util.List;
 
 @PerFragment
@@ -16,7 +17,7 @@ public class NewsViewModel extends ViewModel {
 
     public NewsViewModel(NewsRepository repository) {
         mRepository = repository;
-        newsList = mRepository.loadAllNews();
+        newsList = mRepository.getNewsList();
         mRepository.updateNewsList("테크 | 기술 | 아이티 | IT | ICT | iot | 사물인터넷 | 4차산업혁명 | AI | 인공지능 | 빅데이터 | 자율주행");
     }
 
@@ -28,8 +29,12 @@ public class NewsViewModel extends ViewModel {
         return newsList.getValue().toString();
     }
 
-    public void updateNews(NewsDto news) {
-        mRepository.updateNews(news);
+    public void insertBookmark(NewsDto newsDto) {
+        mRepository.insertBookmark(newsDto);
+    }
+
+    public void deleteBookmark(NewsDto newsDto) {
+        mRepository.deleteBookmark(newsDto);
     }
 
     @Override
@@ -37,4 +42,11 @@ public class NewsViewModel extends ViewModel {
         super.onCleared();
         mRepository.disposeDisposable();
     }
+
+    public boolean isBookmark(String link) {
+        return mRepository.getBookmarkLiveData().getValue().contains(link);
+    }
+
+    public LiveData<HashSet> getBookmarkLiveData() { return mRepository.getBookmarkLiveData(); }
+
 }

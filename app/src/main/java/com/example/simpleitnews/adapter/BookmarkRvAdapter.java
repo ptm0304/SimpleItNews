@@ -75,10 +75,9 @@ public class BookmarkRvAdapter extends RecyclerView.Adapter<BookmarkRvAdapter.Bo
                 mArticleNavigator.navigateArticle(mNews);
             });
 
-            // 북마크 클릭시 북마크 추가
+            // 북마크 클릭시 북마크 삭제
             mBinding.mainNewsBookmark.setOnClickListener(v -> {
-                mNews.setBookmark(!mNews.isBookmark());
-                mVm.updateNews(mNews);
+                mVm.deleteBookmark(mNews);
             });
         }
 
@@ -88,12 +87,7 @@ public class BookmarkRvAdapter extends RecyclerView.Adapter<BookmarkRvAdapter.Bo
         }
 
         private void setBookmark() {
-            if (mNews.isBookmark()) {
-                mBinding.mainNewsBookmark.setImageResource(R.drawable.ic_bookmark_red_24dp);
-            }
-            else {
-                mBinding.mainNewsBookmark.setImageResource(R.drawable.ic_bookmark_border_red_24dp);
-            }
+            mBinding.mainNewsBookmark.setImageResource(R.drawable.ic_bookmark_red_24dp);
         }
     }
 }

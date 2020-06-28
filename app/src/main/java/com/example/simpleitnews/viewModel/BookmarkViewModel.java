@@ -27,7 +27,7 @@ public class BookmarkViewModel extends ViewModel {
         return mBookmarkList.getValue().toString();
     }
 
-    public void updateNews(NewsDto news) {
-        mRepository.updateNews(news);
-    }
+    public void deleteBookmark(NewsDto news) { mRepository.deleteBookmark(news); }
+
+    public boolean isBookmark(String link) { return mRepository.getBookmarkLiveData().getValue().contains(link) ;}
 }

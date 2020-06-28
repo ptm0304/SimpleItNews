@@ -24,8 +24,8 @@ public class NewsDto {
     private String description;
     @ColumnInfo(name = "pubDate")
     private Date pubDate;
-    @ColumnInfo(name = "isBookmark", defaultValue = "1")
-    private boolean isBookmark;
+//    @ColumnInfo(name = "isBookmark", defaultValue = "1")
+//    private boolean isBookmark;
 
     public NewsDto() {
     }
@@ -73,20 +73,20 @@ public class NewsDto {
     }
 
     public String getPubDateStr() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy년 M월 d일 h:mm a", Locale.KOREA);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy년 M월 d일 H:mm", Locale.KOREA);
         return dateFormat.format(pubDate);
     }
     public void setPubDate(Date pubDate) {
         this.pubDate = pubDate;
     }
 
-    public boolean isBookmark() {
-        return isBookmark;
-    }
-
-    public void setBookmark(boolean bookmark) {
-        isBookmark = bookmark;
-    }
+//    public boolean isBookmark() {
+//        return isBookmark;
+//    }
+//
+//    public void setBookmark(boolean bookmark) {
+//        isBookmark = bookmark;
+//    }
 
     @Override
     public String toString() {
@@ -95,7 +95,7 @@ public class NewsDto {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", pubDate='" + pubDate + '\'' +
-                ", isBookmark=" + isBookmark +
+//                ", isBookmark=" + isBookmark +
                 '}';
     }
 }

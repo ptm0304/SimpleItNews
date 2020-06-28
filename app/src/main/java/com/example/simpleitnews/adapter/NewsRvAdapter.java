@@ -77,8 +77,12 @@ public class NewsRvAdapter extends RecyclerView.Adapter<NewsRvAdapter.NewsViewHo
 
             // 북마크 클릭시 북마크 추가
             mBinding.mainNewsBookmark.setOnClickListener(v -> {
-                mNews.setBookmark(!mNews.isBookmark());
-                mVm.updateNews(mNews);
+                if (!mVm.isBookmark(mNews.getLink())) {
+                    mVm.insertBookmark(mNews);
+                }
+                else {
+                    mVm.deleteBookmark(mNews);
+                }
             });
         }
 
@@ -88,7 +92,7 @@ public class NewsRvAdapter extends RecyclerView.Adapter<NewsRvAdapter.NewsViewHo
         }
 
         private void setBookmark() {
-            if (mNews.isBookmark()) {
+            if (mVm.isBookmark(mNews.getLink())) {
                 mBinding.mainNewsBookmark.setImageResource(R.drawable.ic_bookmark_red_24dp);
             }
             else {

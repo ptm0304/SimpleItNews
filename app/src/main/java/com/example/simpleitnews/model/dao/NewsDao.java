@@ -33,6 +33,6 @@ public interface NewsDao {
     @Query("SELECT COUNT(*) FROM NEWS WHERE LINK = :link")
     LiveData<Integer> getNews(String link);
 
-    @Query("SELECT * FROM NEWS WHERE isBookmark = 1 ORDER BY pubDate DESC")
-    LiveData<List<NewsDto>> loadBookmarks();
+//    @Query("SELECT * FROM NEWS WHERE isBookmark = 1 ORDER BY pubDate DESC")
+//    LiveData<List<NewsDto>> loadBookmarks();
 }
