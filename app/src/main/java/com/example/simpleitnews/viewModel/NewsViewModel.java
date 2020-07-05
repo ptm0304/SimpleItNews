@@ -14,11 +14,12 @@ import java.util.List;
 public class NewsViewModel extends ViewModel {
     private LiveData<List<NewsDto>> newsList;
     private NewsRepository mRepository;
+    private final String QUERY = "테크 | 기술 | 아이티 | IT | ICT | iot | 사물인터넷 | 4차산업혁명 | AI | 인공지능 | 빅데이터 | 자율주행";
 
     public NewsViewModel(NewsRepository repository) {
         mRepository = repository;
         newsList = mRepository.getNewsList();
-        mRepository.updateNewsList("테크 | 기술 | 아이티 | IT | ICT | iot | 사물인터넷 | 4차산업혁명 | AI | 인공지능 | 빅데이터 | 자율주행");
+        loadMoreNews();
     }
 
     public LiveData<List<NewsDto>> getNewsList() {
@@ -40,7 +41,7 @@ public class NewsViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        mRepository.disposeDisposable();
+        mRepository.disposeDisposables();
     }
 
     public boolean isBookmark(String link) {
@@ -49,4 +50,7 @@ public class NewsViewModel extends ViewModel {
 
     public LiveData<HashSet> getBookmarkLiveData() { return mRepository.getBookmarkLiveData(); }
 
+    public void loadMoreNews() {
+        mRepository.loadMoreNews(QUERY);
+    }
 }

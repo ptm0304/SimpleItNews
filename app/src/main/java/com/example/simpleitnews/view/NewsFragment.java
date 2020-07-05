@@ -1,5 +1,6 @@
 package com.example.simpleitnews.view;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,6 +32,7 @@ public class NewsFragment extends Fragment {
     NewsViewModel mVm;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -46,6 +49,14 @@ public class NewsFragment extends Fragment {
 
         NewsRvAdapter rvAdapter = new NewsRvAdapter(mVm, (ArticleNavigator) getActivity());
         mBinding.mainRv.setAdapter(rvAdapter);
+        mBinding.mainRv.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (!mBinding.mainRv.canScrollVertically(1)) {
+                    mVm.loadMoreNews();
+                }
+            }
+        });
 
         mVm.getBookmarkLiveData().observe(this.getViewLifecycleOwner(), hashSet -> rvAdapter.notifyDataSetChanged());
 

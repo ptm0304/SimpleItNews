@@ -24,16 +24,18 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @Singleton
 public class NewsRepository {
-    AppDatabase db;
-    NewsService mNewsService;
-    private Disposable mDisposable;
+    private AppDatabase mDb;
+    private NewsService mNewsService;
+    private Disposable mLoadNewsDisposable, mInsertBookmarkDisposable, mDeleteBookmarkDisposable, mLoadBookmarksDisposable;
     private HashSet<String> mBookmarkLinkSet;
     private MutableLiveData<List<NewsDto>> mNewsList;
     private MutableLiveData<HashSet> mBookmarkLiveData;
+    private static int mPage = 1;
+    private static final int mPageSize = 100;
 
     @Inject
     public NewsRepository(AppDatabase db, NewsService newsService) {
-        this.db = db;
+        this.mDb = db;
         this.mNewsService = newsService;
         this.mBookmarkLinkSet = new HashSet<>();
         this.mBookmarkLiveData = new MutableLiveData<>();
@@ -69,17 +71,17 @@ public class NewsRepository {
     public void insertBookmark(NewsDto news) {
         mBookmarkLinkSet.add(news.getLink());
         mBookmarkLiveData.setValue(mBookmarkLinkSet);
-        new BookmarksInsertAsyncTask(news).execute();
+        new BookmarksInsertAsyncTask(news, mDb).execute();
     }
 
     public void deleteBookmark(NewsDto news) {
         mBookmarkLinkSet.remove(news.getLink());
         mBookmarkLiveData.setValue(mBookmarkLinkSet);
-        new BookmarksDeleteAsyncTask(news).execute();
+        new BookmarksDeleteAsyncTask(news, mDb).execute();
     }
 
-    public void updateNewsList(String query) {
-        mDisposable = mNewsService.listNews(query)
+    public void loadMoreNews(String query) {
+        mLoadNewsDisposable = mNewsService.listNews(query, mPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(items -> {
@@ -87,85 +89,66 @@ public class NewsRepository {
                     list.addAll(items.getNewsDtoList());
                     mNewsList.setValue(list);
                 });
+        mPage += mPageSize;
     }
 
-    public void disposeDisposable() {
-        mDisposable.dispose();
+    public void disposeDisposables() {
+        mLoadNewsDisposable.dispose();
+        mDeleteBookmarkDisposable.dispose();
+        mInsertBookmarkDisposable.dispose();
+        mLoadBookmarksDisposable.dispose();
     }
 
-//    public void updateNews(NewsDto news) {
-//        bookmarkLinkSet.add(news.getLink());
-//        bookmarkLiveData.setValue(bookmarkLinkSet);
-//        new NewsUpdateAsyncTask(news).execute();
+//    public LiveData<List<NewsDto>> loadAllBookmarks() {
+//        return mDb.newsDao().loadAllNews();
 //    }
 
     public LiveData<List<NewsDto>> loadAllBookmarks() {
         try {
-            return new BookmarksLoadAllAsyncTask().execute().get();
+            return new BookmarksLoadAllAsyncTask(mDb).execute().get();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-//    public LiveData<List<NewsDto>> loadAllBookmarks() {
-//        try {
-//            return new BookmarkLoadAllAsyncTask().execute().get();
-//        } catch (ExecutionException | InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-
-    private class BookmarksInsertAsyncTask extends AsyncTask<Void, Void, Void> {
+    private static class BookmarksInsertAsyncTask extends AsyncTask<Void, Void, Void> {
         private NewsDto mNews;
-        public BookmarksInsertAsyncTask(NewsDto news) {
+        private AppDatabase mDb;
+        public BookmarksInsertAsyncTask(NewsDto news, AppDatabase db) {
             mNews = news;
+            mDb = db;
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            db.newsDao().insert(mNews);
+            mDb.newsDao().insert(mNews);
             return null;
         }
     }
 
-    private class BookmarksDeleteAsyncTask extends AsyncTask<Void, Void, Void> {
+    private static class BookmarksDeleteAsyncTask extends AsyncTask<Void, Void, Void> {
         private NewsDto mNews;
-        public BookmarksDeleteAsyncTask(NewsDto news) {
+        private AppDatabase mDb;
+        public BookmarksDeleteAsyncTask(NewsDto news, AppDatabase db) {
             mNews = news;
+            mDb = db;
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            db.newsDao().delete(mNews);
+            mDb.newsDao().delete(mNews);
             return null;
         }
     }
 
-    private class BookmarksLoadAllAsyncTask extends AsyncTask<Void, Void, LiveData<List<NewsDto>>> {
+    private static class BookmarksLoadAllAsyncTask extends AsyncTask<Void, Void, LiveData<List<NewsDto>>> {
+        private AppDatabase mDb;
+        public BookmarksLoadAllAsyncTask(AppDatabase db) {
+            mDb = db;
+        }
         @Override
         protected LiveData<List<NewsDto>> doInBackground(Void... voids) {
-            LiveData<List<NewsDto>> newsList = db.newsDao().loadAllNews();
+            LiveData<List<NewsDto>> newsList = mDb.newsDao().loadAllNews();
             return newsList;
         }
     }
-
-//    private class NewsUpdateAsyncTask extends AsyncTask<Void, Void, Void> {
-//        private NewsDto mNews;
-//        public NewsUpdateAsyncTask(NewsDto news) {
-//            mNews = news;
-//        }
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//            db.newsDao().update(mNews);
-//            return null;
-//        }
-//    }
-
-//    private class BookmarkLoadAllAsyncTask extends AsyncTask<Void, Void, LiveData<List<NewsDto>>> {
-//        @Override
-//        protected LiveData<List<NewsDto>> doInBackground(Void... voids) {
-//            LiveData<List<NewsDto>> newsList = db.newsDao().loadBookmarks();
-//            return newsList;
-//        }
-//    }
 }
